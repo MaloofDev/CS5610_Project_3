@@ -1,0 +1,17 @@
+.auth-form {
+  max-width: 420px;
+  margin: 2rem auto;
+}
+
+.auth-form__title {
+  font-size: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.auth-form__error {
+  margin: 1rem 0 0;
+}
+
+.auth-form__footer {
+  margin: 1.25rem 0 0;
+}

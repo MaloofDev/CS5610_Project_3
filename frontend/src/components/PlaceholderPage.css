@@ -1,0 +1,12 @@
+.placeholder-page {
+  padding: 2rem;
+  border: 2px dashed #c3c8cf;
+  border-radius: 0.5rem;
+  background-color: #fff;
+}
+
+.placeholder-page__note {
+  margin: 0;
+  color: #5c6670;
+  font-style: italic;
+}
