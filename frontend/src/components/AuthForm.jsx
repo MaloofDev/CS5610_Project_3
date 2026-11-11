@@ -72,7 +72,7 @@ export default function AuthForm({
               />
             </Form.Group>
           )}
-          <Button type="submit" disabled={submitting}>
+          <Button type="submit" variant="dark" disabled={submitting}>
             {submitLabel}
           </Button>
           {error && (

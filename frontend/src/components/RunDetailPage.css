@@ -1,0 +1,10 @@
+/* Keeps stack traces readable without letting one test take over the table. */
+.run-error {
+  max-height: 7.5rem;
+  min-width: 16rem;
+  padding: 0.375rem 0.5rem;
+  overflow: auto;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

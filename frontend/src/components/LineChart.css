@@ -1,0 +1,5 @@
+/* Chart.js fills its parent, so the parent sets the height. */
+.line-chart {
+  position: relative;
+  height: 220px;
+}
