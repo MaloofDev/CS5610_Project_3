@@ -4,8 +4,8 @@ import useUser from "../context/useUser.js";
 import "./NavBar.css";
 
 const LINKS = [
-  ["/runs", "Runs"],
   ["/dashboard", "Dashboard"],
+  ["/runs", "Runs"],
   ["/releases", "Releases"],
   ["/issues", "Known issues"],
   ["/match", "Match an error"],
