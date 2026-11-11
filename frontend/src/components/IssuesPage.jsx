@@ -1,13 +1,13 @@
-import PlaceholderPage from "./PlaceholderPage.jsx";
+import { Link } from "react-router-dom";
 
 export default function IssuesPage() {
   return (
     <>
       <section className="d-flex justify-content-between align-items-center">
         <h1>Known Issues</h1>
-        <button type="submit" className="btn btn-secondary">
+        <Link to="/issues/new" className="btn btn-secondary">
           + New Issue
-        </button>
+        </Link>
       </section>
       <br></br>
       <section className="card border-2">
