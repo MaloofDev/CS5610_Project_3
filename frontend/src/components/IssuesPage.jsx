@@ -1,6 +1,28 @@
+import { useEffect, useState } from "react";
+import { apiGet } from "../lib/api.js";
 import { Link } from "react-router-dom";
 
 export default function IssuesPage() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadIssues() {
+      try {
+        setData(await apiGet("/api/issues"));
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadIssues();
+  }, []);
+
+  const first = data ? (data.page - 1) * data.pageSize + 1 : 0;
+  const last = data ? first + data.issues.length - 1 : 0;
+
   return (
     <>
       <section className="d-flex justify-content-between align-items-center">
@@ -12,6 +34,8 @@ export default function IssuesPage() {
       <br></br>
       <section className="card border-2">
         <div className="card-body">
+          {loading && <p>Loading...</p>}
+          {error && <p>{error}</p>}
           <form
             id="searchForm"
             className="row g-3 align-items-end"
@@ -61,7 +85,11 @@ export default function IssuesPage() {
         id="records"
         className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
       >
-        <p>Loading records...(fix this)</p>
+        {data && (
+          <p>
+            Showing {first}-{last} of {data.total}
+          </p>
+        )}
       </div>
 
       <section className="card border-2">
@@ -79,24 +107,21 @@ export default function IssuesPage() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
+              {data?.issues.map((issue) => (
+                <tr key={issue._id}>
+                  <td>{issue.title}</td>
+                  <td>{issue.repo}</td>
+                  <td>{issue.affectedReleases.join(",")}</td>
+                  <td>{issue.testOrJob}</td>
+                  <td>{issue.category}</td>
+                  <td>{issue.status}</td>
+                  <td>{issue.updatedAt}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       </section>
     </>
-
-    // <PlaceholderPage
-    //   title="Known issues"
-    //   description="Search known issues by text and filter them by category, status, and affected release."
-    // />
   );
 }
