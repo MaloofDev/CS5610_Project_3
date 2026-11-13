@@ -99,7 +99,6 @@ router.put("/:id", async (req, res) => {
     });
   }
 
-  issue_entry.userId = userId;
   issue_entry.title = title;
   issue_entry.repo = repo;
   issue_entry.affectedReleases = affectedReleases
