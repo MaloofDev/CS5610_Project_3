@@ -72,7 +72,7 @@ router.post("/", async (req, res) => {
   issue_entry.updatedAt = updatedAt;
 
   const { insertedId } = await knownIssues().insertOne(issue_entry);
-  res.status(200).json({ _id: insertedId });
+  res.status(201).json({ _id: insertedId });
 });
 
 // Update an issue

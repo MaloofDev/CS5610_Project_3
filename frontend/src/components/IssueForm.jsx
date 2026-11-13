@@ -13,7 +13,9 @@ export default function IssueForm() {
     errorSnippet: "",
     fixNotes: "",
   });
+
   const [error, setError] = useState("");
+  const isEdit = Boolean(id);
 
   useEffect(() => {
     if (!id) return;
@@ -39,7 +41,7 @@ export default function IssueForm() {
     <form onSubmit={submitForm}>
       <>
         <section className="d-flex justify-content-between align-items-center">
-          <h1>Edit Issue</h1>
+          <h1>{isEdit ? "Edit Issue" : "New Issue"}</h1>
           {error && { error }}
         </section>
 
