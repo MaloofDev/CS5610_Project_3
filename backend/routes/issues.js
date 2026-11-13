@@ -79,7 +79,7 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const _id = toObjectId(req.params.id);
   if (!_id) return res.status(404).json({ error: "No such issue." });
-
+  const userId = req.user._id;
   const title = trimValue(req.body.title);
   const repo = trimValue(req.body.repo);
   const affectedReleases = trimValue(req.body.affectedReleases);
