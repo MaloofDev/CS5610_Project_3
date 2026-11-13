@@ -58,7 +58,7 @@ export default function IssueDetailPage() {
         </div>
       </section>
       <div className="row g-4 pt-3">
-        <div className="col-12 col-md card border-2 p-3">
+        <div className="col-12 col-md card border-2 p-3 align-self-start">
           <p className="text-lg-center-start fw-bold upper fs-4">Details</p>
           <dl className="row">
             <div className="col-6">
