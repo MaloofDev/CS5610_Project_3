@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 export default function IssueDetailPage() {
   // fetch for single issue detail
   const [issue, setIssue] = useState(null);
+  const [updates, setUpdates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id } = useParams();
@@ -12,7 +13,12 @@ export default function IssueDetailPage() {
   useEffect(() => {
     async function loadIssue() {
       try {
-        setIssue(await apiGet(`/api/issues/${id}`));
+        const [issueData, updateData] = await Promise.all([
+          apiGet(`/api/issues/${id}`),
+          apiGet(`/api/updates?issueId=${id}`),
+        ]);
+        setIssue(issueData);
+        setUpdates(updateData);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -22,8 +28,8 @@ export default function IssueDetailPage() {
     loadIssue();
   }, [id]);
 
-  function formatDate() {
-    return new Date(issue.updatedAt)
+  function formatDate(value) {
+    return new Date(value)
       .toLocaleString("en-US", {
         weekday: "short",
         month: "2-digit",
@@ -95,12 +101,17 @@ export default function IssueDetailPage() {
             </div>
           </div>
           <ul>
-            <li>
-              <div className="col-12 col-md card p-3 border-0 bg-transparent">
-                <dd>{formatDate(issue.updatedAt)}</dd>
-                <dd>{issue.status}</dd>
-              </div>
-            </li>
+            {updates.map((u) => (
+              <li key={u._id}>
+                <div className="col-12 col-md card p-3 border-0 bg-transparent">
+                  <dl>
+                    <dd>{formatDate(u.createdAt)}</dd>
+                    <dd>{u.note}</dd>
+                    <dd>{u.outcome}</dd>
+                  </dl>
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
