@@ -49,9 +49,9 @@ export default function IssueDetailPage() {
       <section className="d-flex justify-content-between align-items-center">
         <h1>{issue.title}</h1>
         <div className="d-flex gap-2">
-          <button id="create" type="submit" className="btn btn-primary">
+          <Link to={`/issues/${id}/edit`} className="btn btn-primary">
             Edit
-          </button>
+          </Link>
           <button id="cancel" type="button" className="btn btn-secondary">
             Delete
           </button>
