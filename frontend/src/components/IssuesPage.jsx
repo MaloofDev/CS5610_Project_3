@@ -23,6 +23,19 @@ export default function IssuesPage() {
   const first = data ? (data.page - 1) * data.pageSize + 1 : 0;
   const last = data ? first + data.issues.length - 1 : 0;
 
+  function formatDate(value) {
+    return new Date(value)
+      .toLocaleString("en-US", {
+        // weekday: "short",
+        month: "2-digit",
+        day: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+      .replace(/,/g, "");
+  }
+
   return (
     <>
       <section className="d-flex justify-content-between align-items-center">
@@ -109,13 +122,15 @@ export default function IssuesPage() {
             <tbody>
               {data?.issues.map((issue) => (
                 <tr key={issue._id}>
-                  <td>{issue.title}</td>
+                  <td>
+                    <Link to={`/issues/${issue._id}`}>{issue.title}</Link>
+                  </td>
                   <td>{issue.repo}</td>
                   <td>{issue.affectedReleases.join(",")}</td>
                   <td>{issue.testOrJob}</td>
                   <td>{issue.category}</td>
                   <td>{issue.status}</td>
-                  <td>{issue.updatedAt}</td>
+                  <td>{formatDate(issue.updatedAt)}</td>
                 </tr>
               ))}
             </tbody>
