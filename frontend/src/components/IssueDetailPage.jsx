@@ -8,6 +8,10 @@ export default function IssueDetailPage() {
   const [updates, setUpdates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [newUpdate, setNewUpdate] = useState({
+    note: "",
+    outcome: "no-change",
+  });
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -45,7 +49,7 @@ export default function IssueDetailPage() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  async function deleteIssue(id) {
+  async function deleteIssue() {
     if (!window.confirm("Are you sure you want to delete this issue?")) return;
 
     const res = await fetch(`/api/issues/${id}`, {
@@ -53,6 +57,24 @@ export default function IssueDetailPage() {
     });
     if (!res.ok) return setError("Item not deleted!");
     navigate("/issues");
+  }
+  function handleUpdateChange(e) {
+    setNewUpdate({ ...newUpdate, [e.target.name]: e.target.value });
+  }
+
+  async function addUpdate(e) {
+    e.preventDefault();
+
+    const res = await fetch("/api/updates", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ issueId: id, ...newUpdate }),
+    });
+    if (!res.ok) return setError("The update was not saved.");
+
+    const savedUpdate = await res.json();
+    setUpdates([savedUpdate, ...updates]);
+    setNewUpdate({ note: "", outcome: "no-change" });
   }
 
   return (
@@ -105,15 +127,37 @@ export default function IssueDetailPage() {
           </p>
           <div className="col-12 col-md card border-2 p-3 bg-secondary-subtle">
             <div className="px-3">
-              <dt>Status Updates</dt>
-              <form>
-                <div className="col-12 card border-2 p-3"></div>
+              <form onSubmit={addUpdate}>
+                <label className="form-label">Status Updates</label>
+                <textarea
+                  id="note"
+                  name="note"
+                  className="form-control"
+                  rows="3"
+                  value={newUpdate.note}
+                  onChange={handleUpdateChange}
+                />
+
+                <label className="form-label">Outcome</label>
+                <select
+                  id="outcome"
+                  name="outcome"
+                  className="form-select"
+                  value={newUpdate.outcome}
+                  onChange={handleUpdateChange}
+                >
+                  <option value="no-change">No change</option>
+                  <option value="fixed">Fixed</option>
+                  <option value="workaround">Workaround</option>
+                  <option value="escalated">Escalated</option>
+                </select>
+
+                <div className="pt-3 d-flex justify-content-end">
+                  <button type="submit" className="btn btn-dark">
+                    Provide Update
+                  </button>
+                </div>
               </form>
-              <div className="pt-3 d-flex justify-content-end">
-                <button type="button" className="btn btn-dark">
-                  Provide Update
-                </button>
-              </div>
             </div>
           </div>
           <ul>

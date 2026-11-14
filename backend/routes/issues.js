@@ -120,4 +120,20 @@ router.put("/:id", async (req, res) => {
   res.json({ _id });
 });
 
+// Delete Issue
+router.delete("/:id", async (req, res) => {
+  const _id = toObjectId(req.params.id);
+  if (!_id) return res.status(404).json({ error: "No such issue." });
+
+  const userId = req.user._id;
+  const issueUpdates = () => getDb().collection("issueUpdates");
+
+  const { deletedCount } = await knownIssues().deleteOne({ _id, userId });
+  if (!deletedCount) return res.status(404).json({ error: "No such issue." });
+
+  await issueUpdates().deleteMany({ issueId: _id, userId });
+
+  res.status(204).end();
+});
+
 export default router;
