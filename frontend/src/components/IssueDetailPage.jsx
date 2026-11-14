@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiGet } from "../lib/api.js";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 export default function IssueDetailPage() {
   // fetch for single issue detail
@@ -9,6 +9,7 @@ export default function IssueDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadIssue() {
@@ -44,6 +45,16 @@ export default function IssueDetailPage() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  async function deleteIssue(id) {
+    if (!window.confirm("Are you sure you want to delete this issue?")) return;
+
+    const res = await fetch(`/api/issues/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) return setError("Item not deleted!");
+    navigate("/issues");
+  }
+
   return (
     <>
       <section className="d-flex justify-content-between align-items-center">
@@ -52,7 +63,12 @@ export default function IssueDetailPage() {
           <Link to={`/issues/${id}/edit`} className="btn btn-primary">
             Edit
           </Link>
-          <button id="cancel" type="button" className="btn btn-secondary">
+          <button
+            id="cancel"
+            type="button"
+            className="btn btn-danger"
+            onClick={deleteIssue}
+          >
             Delete
           </button>
         </div>

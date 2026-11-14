@@ -93,7 +93,7 @@ router.put("/:id", async (req, res) => {
   const issue_entry = {};
 
   if (!title || !repo || !testOrJob || !errorSnippet || !category) {
-    return res.status(400).json({
+    return res.status(404).json({
       error:
         "Title, Repo, Test/Job, Error and Category are all required fields.",
     });

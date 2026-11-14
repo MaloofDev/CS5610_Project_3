@@ -23,7 +23,9 @@ export default function IssueForm() {
     async function fetchIssue() {
       const res = await fetch(`/api/issues/${id}`);
       if (!res.ok) return setError("The issue could not be found.");
-      setIssue(await res.json());
+
+      const data = await res.json();
+      setIssue({ ...data, affectedReleases: data.affectedReleases.join(", ") });
     }
     fetchIssue();
   }, [id]);
@@ -31,27 +33,35 @@ export default function IssueForm() {
   async function submitForm(e) {
     e.preventDefault();
     const res = await fetch(id ? `/api/issues/${id}` : "/api/issues", {
-      method: id ? "PATCH" : "POST",
+      method: id ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ issue }),
+      body: JSON.stringify(issue),
     });
     if (!res.ok) return setError("The issue could not be saved.");
+
+    const savedIssue = await res.json();
+    navigate(`/issues/${savedIssue._id}`);
   }
 
   function handleChange(e) {
-    setIssue({ issue, [e.target.name]: e.target.value });
+    setIssue({ ...issue, [e.target.name]: e.target.value });
   }
 
   return (
-    <form onSubmit={submitForm}>
+    <>
       <section className="d-flex justify-content-between align-items-center">
         <h1>{isEdit ? "Edit Issue" : "New Issue"}</h1>
-        {error && { error }}
+        {error && <div className="alert alert-danger">{error}</div>}
       </section>
 
       <section className="card border-2">
         <div className="card-body">
-          <form id="packageForm" className="needs-validation" noValidate>
+          <form
+            id="packageForm"
+            className="needs-validation"
+            noValidate
+            onSubmit={submitForm}
+          >
             <div className="row py-2">
               <div className="col-4">
                 <label className="form-label">Title</label>
@@ -179,6 +189,6 @@ export default function IssueForm() {
           </form>
         </div>
       </section>
-    </form>
+    </>
   );
 }
