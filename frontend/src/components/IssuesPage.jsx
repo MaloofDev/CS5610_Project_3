@@ -156,15 +156,35 @@ export default function IssuesPage() {
       <br></br>
       <div
         id="records"
-        className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
+        className="d-flex justify-content-between align-items-center my-3"
       >
         {data && (
           <p>
             Showing {first}-{last} of {data.total}
           </p>
         )}
-      </div>
 
+        <div className="btn-group" role="group" aria-label="Issue-navigation">
+          <button
+            id="previous"
+            type="button"
+            className="btn btn-outline-primary"
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+          >
+            Previous
+          </button>
+          <button
+            id="next"
+            type="button"
+            className="btn btn-outline-primary"
+            disabled={!data || last >= data.total}
+            onClick={() => setPage(page + 1)}
+          >
+            Next
+          </button>
+        </div>
+      </div>
       <section className="card border-2">
         <div className="card-body">
           <table className="table">
