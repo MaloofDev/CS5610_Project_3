@@ -35,6 +35,22 @@ router.get("/", async (req, res) => {
   res.json({ issues: list, total, page, pageSize: PAGE_SIZE });
 });
 
+// Match an issue from error message
+router.get("/match", async (req, res) => {
+  const text = trimValue(req.query.text).toLowerCase();
+  if (!text)
+    return res.status(400).json({ error: "You must enter a message!" });
+
+  const all_errors = await knownIssues()
+    .find({ userId: req.user._id })
+    .toArray();
+  const matches = all_errors.filter((issue) => {
+    const snippet = issue.errorSnippet.toLowerCase();
+    return text.includes(snippet) || snippet.includes(text);
+  });
+  res.json(matches);
+});
+
 //  Drill down on an issue and get the details
 router.get("/:id", async (req, res) => {
   const _id = toObjectId(req.params.id);
