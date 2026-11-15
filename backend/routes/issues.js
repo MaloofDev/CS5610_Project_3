@@ -12,6 +12,17 @@ router.get("/", async (req, res) => {
   const query = { userId: req.user._id };
   const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
 
+  // filters
+  const search = trimValue(req.query.search);
+  const status = trimValue(req.query.status);
+  const category = trimValue(req.query.category);
+  const release = trimValue(req.query.release);
+
+  if (search) query.title = { $regex: search, $options: "i" };
+  if (status) query.status = status;
+  if (category) query.category = category;
+  if (release) query.affectedReleases = release;
+
   const [list, total] = await Promise.all([
     knownIssues()
       .find(query)

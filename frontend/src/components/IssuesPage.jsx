@@ -7,10 +7,25 @@ export default function IssuesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Filter variables
+  const [searchText, setSearchText] = useState("");
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+  const [category, setCategory] = useState("");
+  const [release, setRelease] = useState("");
+  const [page, setPage] = useState(1);
+
   useEffect(() => {
     async function loadIssues() {
+      const filters = new URLSearchParams({
+        search,
+        status,
+        category,
+        release,
+        page,
+      });
       try {
-        setData(await apiGet("/api/issues"));
+        setData(await apiGet(`/api/issues?${filters}`));
       } catch (error) {
         setError(error.message);
       } finally {
@@ -18,7 +33,13 @@ export default function IssuesPage() {
       }
     }
     loadIssues();
-  }, []);
+  }, [search, status, category, release, page]);
+
+  function handleSearch(e) {
+    e.preventDefault();
+    setSearch(searchText);
+    setPage(1);
+  }
 
   const first = data ? (data.page - 1) * data.pageSize + 1 : 0;
   const last = data ? first + data.issues.length - 1 : 0;
@@ -53,6 +74,7 @@ export default function IssuesPage() {
             id="searchForm"
             className="row g-3 align-items-end"
             role="search"
+            onSubmit={handleSearch}
           >
             <div className="col-12 col-lg-5">
               <label className="form-label">Search</label>
@@ -61,8 +83,10 @@ export default function IssuesPage() {
                   id="searchInput"
                   className="form-control"
                   type="search"
-                  placeholder="Search by Package Name"
+                  placeholder="Search by title"
                   aria-label="Search"
+                  onChange={(e) => setSearchText(e.target.value)}
+                  value={searchText}
                 />
                 <button type="submit" className="btn btn-primary">
                   Search
@@ -72,22 +96,58 @@ export default function IssuesPage() {
 
             <div className="col-12 col-md-4 col-lg">
               <label className="form-label">Category</label>
-              <select className="form-select w-auto">
-                <option value="">Category</option>
+              <select
+                className="form-select"
+                onChange={(e) => {
+                  setCategory(e.target.value);
+                  setPage(1);
+                }}
+                value={category}
+              >
+                <option value="">All</option>
+                <option value="flaky-test">Flaky Test</option>
+                <option value="infra">Infra</option>
+                <option value="timeout">Timeout</option>
+                <option value="config">Config</option>
+                <option value="dependency">Dependency</option>
               </select>
             </div>
 
             <div className="col-12 col-md-4 col-lg">
               <label className="form-label">Status</label>
-              <select className="form-select w-auto">
-                <option value="">Status</option>
+              <select
+                className="form-select"
+                onChange={(e) => {
+                  setStatus(e.target.value);
+                  setPage(1);
+                }}
+                value={status}
+              >
+                <option value="">All</option>
+                <option value="investigating">Investigating</option>
+                <option value="quarantined">Quarantined</option>
+                <option value="resolved">Resolved</option>
               </select>
             </div>
 
             <div className="col-12 col-md-4 col-lg">
               <label className="form-label">Affected Release</label>
-              <select className="form-select w-auto">
-                <option value="">Affected Release</option>
+              <select
+                className="form-select"
+                onChange={(e) => {
+                  setRelease(e.target.value);
+                  setPage(1);
+                }}
+                value={release}
+              >
+                <option value="">All</option>
+                <option value="v0.7.9">v0.7.9</option>
+                <option value="v0.8.3">v0.8.3</option>
+                <option value="v1.8.4">v1.8.4</option>
+                <option value="v1.9.0">v1.9.0</option>
+                <option value="v2.3.7">v2.3.7</option>
+                <option value="v2.4.2">v2.4.2</option>
+                <option value="v3.1.0">v3.1.0</option>
               </select>
             </div>
           </form>
